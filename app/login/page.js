@@ -1,8 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 export default function LoginPage() {
+  async function loginWithGoogle() {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+  }
+
   return (
     <main className="login-page">
       <div className="login-card">
@@ -14,10 +29,14 @@ export default function LoginPage() {
 
         <p>
           Login to AI Business Advert Editor
+          <br />
           and start creating professional posters.
         </p>
 
-        <button className="google-login-button">
+        <button
+          className="google-login-button"
+          onClick={loginWithGoogle}
+        >
           <span className="google-icon">G</span>
           Continue with Google
         </button>
